@@ -6,7 +6,7 @@
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
 Zero dependencies. Runs in Node, Bun, Deno, Cloudflare Workers, and the browser.
-Vue and Nuxt bindings included. [한국어 README](./README.ko.md)
+React, Vue and Nuxt bindings included. [한국어 README](./README.ko.md)
 
 ```bash
 npm i @devslab/locale-match
@@ -229,6 +229,92 @@ payload, and the client agrees rather than re-detecting — so the page never
 changes language after it paints, and hydration cannot mismatch.
 
 Requires Nuxt 3.8 or newer.
+
+## React
+
+```bash
+npm i @devslab/locale-match @devslab/locale-match-react
+```
+
+```tsx
+import { LocaleProvider, useLocale } from '@devslab/locale-match-react';
+
+export function App({ serverLocale }) {
+  return (
+    <LocaleProvider
+      supported={['ko', 'en', 'ja', 'zh-HK', 'zh-TW']}
+      fallback="ko"
+      initial={serverLocale}   // omit in a pure SPA
+    >
+      <Page />
+    </LocaleProvider>
+  );
+}
+
+function Page() {
+  const { locale, setLocale, supported, isFallback } = useLocale();
+  return (
+    <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+      {supported.map((l) => <option key={l}>{l}</option>)}
+    </select>
+  );
+}
+```
+
+Detection runs in an effect **after mount**, never during render. Server-rendered
+HTML — including a static export — carries whatever locale the server knew, and
+disagreeing on the first client render is a hydration mismatch, which React
+resolves by throwing the server's markup away. The cost is one frame of the
+fallback language before the swap. Pass `initial`, resolved on the server, and
+there is no frame to lose.
+
+## Next.js
+
+Next needs no adapter — its integration points are plain function calls, and the
+core is a plain function.
+
+```ts
+// middleware.ts
+import { NextResponse, type NextRequest } from 'next/server';
+import { createLocaleResolver } from '@devslab/locale-match';
+
+const locales = createLocaleResolver({
+  supported: ['ko', 'en', 'ja', 'zh-HK', 'zh-TW'],
+  fallback: 'ko',
+});
+
+export function middleware(request: NextRequest) {
+  const { locale } = locales.resolve({
+    query: request.nextUrl.searchParams.get('lang'),
+    cookieHeader: request.headers.get('cookie'),
+    acceptLanguage: request.headers.get('accept-language'),
+  });
+  const response = NextResponse.rewrite(
+    new URL(`/${locale}${request.nextUrl.pathname}`, request.url),
+  );
+  // See the warning below.
+  response.headers.set('Vary', 'Accept-Language');
+  return response;
+}
+```
+
+```ts
+// or in a server component — pass the answer to <LocaleProvider initial={...}>
+import { headers } from 'next/headers';
+
+const { locale } = locales.resolve({
+  acceptLanguage: (await headers()).get('accept-language'),
+  cookieHeader: (await headers()).get('cookie'),
+});
+```
+
+> **Set `Vary: Accept-Language` on any response you vary this way.** A cache that
+> does not know the response depends on that header will serve one visitor's
+> language to the next. We shipped that bug in production; it is not theoretical.
+
+A dedicated `-next` package is deliberately not published yet: it would wrap a
+one-line call, and we do not run Next.js SSR ourselves, so we could not honestly
+claim the server half was proven.
 
 ## No build step
 

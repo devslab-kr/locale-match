@@ -6,7 +6,7 @@
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
 의존성 0. Node · Bun · Deno · Cloudflare Workers · 브라우저 어디서나 동작합니다.
-Vue · Nuxt 바인딩 포함. [English README](./README.md)
+React · Vue · Nuxt 바인딩 포함. [English README](./README.md)
 
 ```bash
 npm i @devslab/locale-match
@@ -225,6 +225,91 @@ export default defineNuxtConfig({
 언어가 바뀌는 깜빡임이 없고**, 하이드레이션 불일치도 생길 수 없습니다.
 
 Nuxt 3.8 이상이 필요합니다.
+
+## React
+
+```bash
+npm i @devslab/locale-match @devslab/locale-match-react
+```
+
+```tsx
+import { LocaleProvider, useLocale } from '@devslab/locale-match-react';
+
+export function App({ serverLocale }) {
+  return (
+    <LocaleProvider
+      supported={['ko', 'en', 'ja', 'zh-HK', 'zh-TW']}
+      fallback="ko"
+      initial={serverLocale}   // 순수 SPA면 생략
+    >
+      <Page />
+    </LocaleProvider>
+  );
+}
+
+function Page() {
+  const { locale, setLocale, supported, isFallback } = useLocale();
+  return (
+    <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+      {supported.map((l) => <option key={l}>{l}</option>)}
+    </select>
+  );
+}
+```
+
+감지는 렌더 중이 아니라 **마운트 직후 이펙트에서** 실행됩니다. 서버가 그린
+HTML(정적 내보내기 포함)은 서버가 알던 로케일을 담고 있는데, 클라이언트 첫
+렌더가 그와 다른 판단을 하면 하이드레이션 불일치가 되고 React는 서버 마크업을
+버립니다. 대가는 전환 전 **폴백 언어 한 프레임**입니다. 서버에서 확정한 값을
+`initial`로 넘기면 그 한 프레임도 없습니다.
+
+## Next.js
+
+Next에는 어댑터가 필요 없습니다 — 연결 지점이 평범한 함수 호출이고, 코어가
+평범한 함수이기 때문입니다.
+
+```ts
+// middleware.ts
+import { NextResponse, type NextRequest } from 'next/server';
+import { createLocaleResolver } from '@devslab/locale-match';
+
+const locales = createLocaleResolver({
+  supported: ['ko', 'en', 'ja', 'zh-HK', 'zh-TW'],
+  fallback: 'ko',
+});
+
+export function middleware(request: NextRequest) {
+  const { locale } = locales.resolve({
+    query: request.nextUrl.searchParams.get('lang'),
+    cookieHeader: request.headers.get('cookie'),
+    acceptLanguage: request.headers.get('accept-language'),
+  });
+  const response = NextResponse.rewrite(
+    new URL(`/${locale}${request.nextUrl.pathname}`, request.url),
+  );
+  // 아래 경고 참조.
+  response.headers.set('Vary', 'Accept-Language');
+  return response;
+}
+```
+
+```ts
+// 또는 서버 컴포넌트에서 — 그 답을 <LocaleProvider initial={...}>로 넘기면 됩니다
+import { headers } from 'next/headers';
+
+const { locale } = locales.resolve({
+  acceptLanguage: (await headers()).get('accept-language'),
+  cookieHeader: (await headers()).get('cookie'),
+});
+```
+
+> **이렇게 응답이 달라지는 모든 곳에 `Vary: Accept-Language`를 반드시 넣으세요.**
+> 응답이 그 헤더에 의존한다는 걸 모르는 캐시는 한 방문자의 언어를 다음 방문자에게
+> 그대로 내줍니다. 저희가 프로덕션에서 실제로 낸 사고이지 이론이 아닙니다.
+
+전용 `-next` 패키지는 **일부러 아직 내지 않았습니다.** 한 줄 호출을 감싸는 것에
+불과하고, 저희가 Next.js SSR을 직접 운영하지 않아서 서버 쪽이 검증됐다고
+정직하게 말할 수 없기 때문입니다.
 
 ## 빌드 스텝 없이
 

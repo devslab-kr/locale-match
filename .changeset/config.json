@@ -2,7 +2,14 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["@devslab/locale-match", "@devslab/locale-match-vue", "@devslab/locale-match-nuxt"]],
+  "fixed": [
+    [
+      "@devslab/locale-match",
+      "@devslab/locale-match-vue",
+      "@devslab/locale-match-nuxt",
+      "@devslab/locale-match-react"
+    ]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",

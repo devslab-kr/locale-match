@@ -1,0 +1,43 @@
+{
+  "name": "@devslab/locale-match-react",
+  "version": "0.1.0",
+  "description": "React binding for @devslab/locale-match — a useLocale() hook with hydration-safe detection.",
+  "license": "Apache-2.0",
+  "author": "devslab",
+  "homepage": "https://github.com/devslab-kr/locale-match",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devslab-kr/locale-match.git",
+    "directory": "packages/locale-match-react"
+  },
+  "bugs": "https://github.com/devslab-kr/locale-match/issues",
+  "keywords": ["react", "nextjs", "i18n", "locale", "accept-language", "hook", "ssr", "hydration"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": { "react": ">=18" },
+  "dependencies": { "@devslab/locale-match": "workspace:^" },
+  "devDependencies": {
+    "@testing-library/react": "^16.0.1",
+    "@types/react": "^18.3.12",
+    "jsdom": "^25.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
