@@ -3,6 +3,21 @@
 All notable changes to this project are documented here. The packages share one
 version number, so an entry covers every package unless it says otherwise.
 
+## 0.1.1
+
+### Fixed
+
+- Every package now ships its own `README.md`, so the npm page shows the
+  documentation instead of "This package does not have a README". npm reads the
+  README from the package directory, not the repository root.
+
+### Changed
+
+- READMEs follow the devslab OSS convention: the four-badge block (npm, CI,
+  TypeScript, License) on the repository README, a single npm badge on each
+  package, a nav line with the `한국어` / `English` pair, and a `## Packages`
+  table. Bilingual pairs for every package.
+
 ## 0.1.0
 
 First release.
