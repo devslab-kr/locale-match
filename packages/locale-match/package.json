@@ -1,6 +1,6 @@
 {
   "name": "@devslab/locale-match",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Locale negotiation that will not hand a Simplified Chinese reader your Traditional text. Accept-Language and navigator.languages matching with pluggable script guards. Zero dependencies, runs anywhere.",
   "license": "Apache-2.0",
   "author": "devslab",
