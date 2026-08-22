@@ -1,16 +1,23 @@
 # locale-match
 
-**간체 중국어 독자에게 번체 텍스트를 건네지 않는 로케일 협상 라이브러리.**
-
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match)](https://www.npmjs.com/package/@devslab/locale-match)
-[![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+[![CI](https://github.com/devslab-kr/locale-match/actions/workflows/ci.yml/badge.svg)](https://github.com/devslab-kr/locale-match/actions/workflows/ci.yml)
+![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue)](./LICENSE)
 
-의존성 0. Node · Bun · Deno · Cloudflare Workers · 브라우저 어디서나 동작합니다.
-React · Vue · Nuxt 바인딩 포함. [English README](./README.md)
+**[변경 이력](CHANGELOG.md)** · [English](README.md)
 
-```bash
-npm i @devslab/locale-match
-```
+간체 중국어 독자에게 번체 텍스트를 건네지 않는 로케일 협상 라이브러리.
+의존성 0, Node · Bun · Deno · Cloudflare Workers · 브라우저 어디서나 동작합니다.
+
+## 패키지
+
+| 패키지 | 설명 |
+|---|---|
+| [`@devslab/locale-match`](packages/locale-match) | 코어: 매칭, `Accept-Language` 파싱, 우선순위 사슬, 스크립트 가드. 의존성 0, 프레임워크 무관, CDN용 IIFE 빌드 포함. |
+| [`@devslab/locale-match-react`](packages/locale-match-react) | React `<LocaleProvider>` + `useLocale()`. 하이드레이션 안전. |
+| [`@devslab/locale-match-vue`](packages/locale-match-vue) | Vue 3 플러그인 + `useLocale()` 컴포저블. |
+| [`@devslab/locale-match-nuxt`](packages/locale-match-nuxt) | Nuxt 모듈 — SSR에서 확정하므로 페이지가 그려진 뒤 언어가 바뀌지 않습니다. |
 
 ## 무엇이 문제인가
 

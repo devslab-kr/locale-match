@@ -1,16 +1,23 @@
 # locale-match
 
-**Locale negotiation that will not hand a Simplified Chinese reader your Traditional text.**
-
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match)](https://www.npmjs.com/package/@devslab/locale-match)
-[![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+[![CI](https://github.com/devslab-kr/locale-match/actions/workflows/ci.yml/badge.svg)](https://github.com/devslab-kr/locale-match/actions/workflows/ci.yml)
+![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue)](./LICENSE)
 
-Zero dependencies. Runs in Node, Bun, Deno, Cloudflare Workers, and the browser.
-React, Vue and Nuxt bindings included. [한국어 README](./README.ko.md)
+**[Changelog](CHANGELOG.md)** · [한국어](README.ko.md)
 
-```bash
-npm i @devslab/locale-match
-```
+Locale negotiation that will not hand a Simplified Chinese reader your Traditional text.
+Zero dependencies; runs in Node, Bun, Deno, Cloudflare Workers, and the browser.
+
+## Packages
+
+| Package | Description |
+|---|---|
+| [`@devslab/locale-match`](packages/locale-match) | Core: matching, `Accept-Language` parsing, the precedence chain, and script guards. Zero dependencies, framework-free, CDN-ready IIFE build. |
+| [`@devslab/locale-match-react`](packages/locale-match-react) | React `<LocaleProvider>` + `useLocale()`. Hydration-safe. |
+| [`@devslab/locale-match-vue`](packages/locale-match-vue) | Vue 3 plugin + `useLocale()` composable. |
+| [`@devslab/locale-match-nuxt`](packages/locale-match-nuxt) | Nuxt module — resolves during SSR, so the page never changes language after it paints. |
 
 ## The problem
 

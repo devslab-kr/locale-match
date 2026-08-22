@@ -1,6 +1,6 @@
 {
   "name": "@devslab/locale-match-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React binding for @devslab/locale-match — a useLocale() hook with hydration-safe detection.",
   "license": "Apache-2.0",
   "author": "devslab",
