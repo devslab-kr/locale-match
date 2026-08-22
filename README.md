@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](./LICENSE)
 
-**[Changelog](CHANGELOG.md)** · [한국어](README.ko.md)
+**[Docs & playground](https://devslab-kr.github.io/locale-match/)** · [Changelog](CHANGELOG.md) · [한국어](README.ko.md)
 
 Locale negotiation that will not hand a Simplified Chinese reader your Traditional text.
 Zero dependencies; runs in Node, Bun, Deno, Cloudflare Workers, and the browser.

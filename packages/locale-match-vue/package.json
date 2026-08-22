@@ -4,7 +4,7 @@
   "description": "Vue 3 binding for @devslab/locale-match — a useLocale() composable with SSR-safe hydration.",
   "license": "Apache-2.0",
   "author": "devslab",
-  "homepage": "https://github.com/devslab-kr/locale-match",
+  "homepage": "https://devslab-kr.github.io/locale-match/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devslab-kr/locale-match.git",

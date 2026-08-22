@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match-nuxt)](https://www.npmjs.com/package/@devslab/locale-match-nuxt)
 
-**[Docs](https://github.com/devslab-kr/locale-match)** · [한국어](README.ko.md)
+**[Docs & playground](https://devslab-kr.github.io/locale-match/)** · [한국어](README.ko.md)
 
 Nuxt module for [`@devslab/locale-match`](https://www.npmjs.com/package/@devslab/locale-match) — locale negotiation that will not hand a Simplified Chinese reader your Traditional text.
 

@@ -4,7 +4,7 @@
   "description": "Locale negotiation that will not hand a Simplified Chinese reader your Traditional text. Accept-Language and navigator.languages matching with pluggable script guards. Zero dependencies, runs anywhere.",
   "license": "Apache-2.0",
   "author": "devslab",
-  "homepage": "https://github.com/devslab-kr/locale-match",
+  "homepage": "https://devslab-kr.github.io/locale-match/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devslab-kr/locale-match.git",

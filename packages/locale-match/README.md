@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match)](https://www.npmjs.com/package/@devslab/locale-match)
 
-**[Docs](https://github.com/devslab-kr/locale-match)** · [Changelog](https://github.com/devslab-kr/locale-match/blob/main/CHANGELOG.md) · [한국어](README.ko.md)
+**[Docs & playground](https://devslab-kr.github.io/locale-match/)** · [Changelog](https://github.com/devslab-kr/locale-match/blob/main/CHANGELOG.md) · [한국어](README.ko.md)
 
 **Locale negotiation that will not hand a Simplified Chinese reader your Traditional text.**
 Zero dependencies. Runs in Node, Bun, Deno, Cloudflare Workers, and the browser.
