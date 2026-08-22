@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match-nuxt)](https://www.npmjs.com/package/@devslab/locale-match-nuxt)
 
-**[문서](https://github.com/devslab-kr/locale-match/blob/main/README.ko.md)** · [English](README.md)
+**[문서 & 플레이그라운드](https://devslab-kr.github.io/locale-match/)** · [English](README.md)
 
 [`@devslab/locale-match`](https://www.npmjs.com/package/@devslab/locale-match)의
 Nuxt 모듈 — 간체 중국어 독자에게 번체 텍스트를 건네지 않는 로케일 협상.

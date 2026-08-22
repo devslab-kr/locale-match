@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](./LICENSE)
 
-**[변경 이력](CHANGELOG.md)** · [English](README.md)
+**[문서 & 플레이그라운드](https://devslab-kr.github.io/locale-match/)** · [변경 이력](CHANGELOG.md) · [English](README.md)
 
 간체 중국어 독자에게 번체 텍스트를 건네지 않는 로케일 협상 라이브러리.
 의존성 0, Node · Bun · Deno · Cloudflare Workers · 브라우저 어디서나 동작합니다.

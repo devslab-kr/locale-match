@@ -4,7 +4,7 @@
   "description": "Nuxt module for @devslab/locale-match — resolves the locale during SSR from Accept-Language, so the page never changes language after it paints.",
   "license": "Apache-2.0",
   "author": "devslab",
-  "homepage": "https://github.com/devslab-kr/locale-match",
+  "homepage": "https://devslab-kr.github.io/locale-match/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devslab-kr/locale-match.git",
