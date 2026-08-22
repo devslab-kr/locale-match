@@ -1,0 +1,49 @@
+{
+  "name": "@devslab/locale-match",
+  "version": "0.1.0",
+  "description": "Locale negotiation that will not hand a Simplified Chinese reader your Traditional text. Accept-Language and navigator.languages matching with pluggable script guards. Zero dependencies, runs anywhere.",
+  "license": "Apache-2.0",
+  "author": "devslab",
+  "homepage": "https://github.com/devslab-kr/locale-match",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devslab-kr/locale-match.git",
+    "directory": "packages/locale-match"
+  },
+  "bugs": "https://github.com/devslab-kr/locale-match/issues",
+  "keywords": [
+    "i18n",
+    "l10n",
+    "locale",
+    "accept-language",
+    "language-detection",
+    "locale-negotiation",
+    "bcp47",
+    "rfc4647",
+    "zh-hant",
+    "zh-hans",
+    "traditional-chinese",
+    "simplified-chinese",
+    "navigator-languages",
+    "cloudflare-workers"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
