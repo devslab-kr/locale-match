@@ -1,0 +1,43 @@
+{
+  "name": "@devslab/locale-match-nuxt",
+  "version": "0.1.0",
+  "description": "Nuxt module for @devslab/locale-match — resolves the locale during SSR from Accept-Language, so the page never changes language after it paints.",
+  "license": "Apache-2.0",
+  "author": "devslab",
+  "homepage": "https://github.com/devslab-kr/locale-match",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devslab-kr/locale-match.git",
+    "directory": "packages/locale-match-nuxt"
+  },
+  "bugs": "https://github.com/devslab-kr/locale-match/issues",
+  "keywords": ["nuxt", "nuxt-module", "i18n", "locale", "accept-language", "ssr"],
+  "type": "module",
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "nuxt-module-build build",
+    "prepare:types": "nuxt-module-build prepare",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.14.0",
+    "@devslab/locale-match": "workspace:^",
+    "@devslab/locale-match-vue": "workspace:^"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^0.8.4",
+    "@nuxt/schema": "^3.14.0",
+    "nuxt": "^3.14.0",
+    "vue": "^3.5.12"
+  }
+}

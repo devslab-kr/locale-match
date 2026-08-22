@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "//": "src/runtime is compiled by the consuming Nuxt app, where #imports resolves. Typechecking it standalone is not possible without generating .nuxt types, so the module entry is what we check here.",
+  "include": ["src/module.ts"],
+  "compilerOptions": { "types": ["node"] }
+}
