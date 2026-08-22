@@ -3,6 +3,24 @@
 All notable changes to this project are documented here. The packages share one
 version number, so an entry covers every package unless it says otherwise.
 
+## 0.1.2
+
+### Added
+
+- A documentation site with a live playground:
+  <https://devslab-kr.github.io/locale-match/>. Paste an
+  `Accept-Language` header and it shows, tag by tag, which entries the
+  script guard refuses and which one wins — including the bare `zh`
+  that used to rescue a refused `zh-CN`. It runs on the published
+  package loaded from a CDN, so the demo cannot drift from the
+  implementation.
+
+### Changed
+
+- `homepage` in every package now points at the site rather than the
+  repository, and the READMEs link the playground. A registry only
+  picks these up on publish, which is what this release is for.
+
 ## 0.1.1
 
 ### Fixed
