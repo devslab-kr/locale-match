@@ -20,7 +20,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # Order matters: sibling packages resolve each other's types through
-      # dist/, so every package must be built before anything is typechecked.
-      - run: pnpm build
-      - run: pnpm typecheck
-      - run: pnpm test
+      # dist/, so the standard gate builds before typechecking and testing.
+      # It also proves the versioned O07 brand source contract.
+      - run: pnpm verify
