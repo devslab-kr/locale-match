@@ -1,5 +1,11 @@
 # @devslab/locale-match-nuxt
 
+<p align="center">
+  <a href="https://devslab.kr/brand/open-source/"><img src="../../docs/assets/brand/readme-header.png" alt="locale-match - Open source by DevsLab" width="100%" /></a>
+</p>
+
+**Open source by [DevsLab](https://devslab.kr/)** · [OSS brand guide](https://devslab.kr/brand/open-source/) · Registry O07
+
 [![npm](https://img.shields.io/npm/v/%40devslab%2Flocale-match-nuxt)](https://www.npmjs.com/package/@devslab/locale-match-nuxt)
 
 **[Docs & playground](https://devslab-kr.github.io/locale-match/)** · [한국어](README.ko.md)

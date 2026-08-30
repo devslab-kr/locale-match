@@ -3,21 +3,32 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>locale-match — 간체 독자에게 번체를 주지 않는 로케일 협상</title>
+    <title>locale-match | DevsLab 오픈소스</title>
     <meta
       name="description"
       content="Accept-Language · navigator.languages 매칭에 교체 가능한 스크립트 가드. 본토 간체 브라우저에 번체 텍스트를 주지 않습니다. 의존성 0, React · Vue · Nuxt 바인딩."
     />
     <link rel="canonical" href="https://devslab-kr.github.io/locale-match/" />
-    <link rel="icon" href="https://devslab.kr/favicon.ico" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="devslab open source" />
     <meta property="og:url" content="https://devslab-kr.github.io/locale-match/" />
-    <meta property="og:title" content="locale-match — 로케일 협상, 문자까지 맞게" />
+    <meta property="og:title" content="locale-match | DevsLab 오픈소스" />
     <meta
       property="og:description"
       content="맨 zh는 간체인지 번체인지 말하지 않습니다. 두 층 규칙과 스크립트 가드로 그 함정을 막습니다. 의존성 0."
     />
+    <meta property="og:image" content="https://devslab-kr.github.io/locale-match/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="locale-match resolution path logo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="locale-match | DevsLab 오픈소스" />
+    <meta name="twitter:description" content="문자까지 맞게 협상하는 의존성 없는 로케일 매처" />
+    <meta name="twitter:image" content="https://devslab-kr.github.io/locale-match/og.png" />
+    <meta name="twitter:image:alt" content="locale-match resolution path logo" />
     <meta name="google-site-verification" content="nIGsjwN9PU78ZpydYp5q4blPGCHBaZZRuvVI8wsJREg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -78,7 +89,8 @@
       @media (min-width: 640px) { .top-inner { padding: 0.875rem 1.5rem; } }
       .brand { display: flex; align-items: center; gap: 0.5rem; color: var(--ink); }
       .brand:hover { text-decoration: none; }
-      .brand svg { width: 1.5rem; height: 1.5rem; flex: none; }
+      .brand-mark { width: 1.5rem; height: 1.5rem; flex: none; }
+      html.dark .brand-mark { filter: brightness(0) invert(1); }
       .brand b { font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.02em; }
       .brand span { font-size: 0.8125rem; color: var(--muted); }
       .top-nav { display: flex; align-items: center; gap: 0.625rem; }
@@ -98,12 +110,14 @@
       #lang-btn { width: auto; padding: 0 0.5rem; font: 500 0.75rem 'Geist Mono', monospace; }
 
       .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-      .hero .dots {
-        pointer-events: none; position: absolute; inset: 0;
-        background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
-        background-size: 24px 24px;
-        -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-        mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      .hero-atmosphere { isolation: isolate; }
+      .hero-atmosphere__glow {
+        pointer-events: none; position: absolute; z-index: -1; inset: -8rem -10% -10rem 40%;
+        background: radial-gradient(ellipse at center, rgb(8 145 178 / 0.12), transparent 68%);
+      }
+      html.dark .hero-atmosphere__glow { opacity: 0.10; }
+      @media (forced-colors: active), print {
+        .hero-atmosphere__glow { display: none; }
       }
       .hero-inner { position: relative; padding: 4rem 0 3.5rem; }
       @media (min-width: 768px) { .hero-inner { padding: 5.5rem 0 4.5rem; } }
@@ -183,9 +197,9 @@
   <body>
     <header class="top">
       <div class="wrap top-inner">
-        <a class="brand" href="https://devslab-kr.github.io/">
-          <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M 4 4 L 28 4 L 28 12 L 20 12 L 20 28 L 4 28 Z" /></svg>
-          <b>locale-match</b><span class="mono">/ devslab</span>
+        <a class="brand" href="https://devslab.kr/brand/open-source/" aria-label="locale-match, Open source by DevsLab">
+          <img class="brand-mark" src="favicon.svg" alt="" aria-hidden="true" />
+          <b>locale-match</b><span class="mono">/ Open source by DevsLab</span>
         </a>
         <nav class="top-nav">
           <a class="hide-sm" href="https://github.com/devslab-kr/locale-match" data-i18n="navGithub">GitHub</a>
@@ -200,8 +214,8 @@
     </header>
 
     <main>
-      <section class="hero" style="padding:0">
-        <div class="dots" aria-hidden="true"></div>
+      <section class="hero hero-atmosphere" data-atmosphere="project" style="padding:0">
+        <div class="hero-atmosphere__glow" aria-hidden="true"></div>
         <div class="wrap hero-inner">
           <p class="eyebrow mono" dir="ltr">// @devslab/locale-match</p>
           <h1><span data-i18n="h1a">간체 중국어 독자에게</span><br /><span class="accent" data-i18n="h1b">번체를 주지 않습니다</span></h1>
@@ -407,6 +421,7 @@ const serbianLatin = defineScriptGuard({
         <span>Apache-2.0 © devslab</span>
         <a href="https://github.com/devslab-kr/locale-match">github.com/devslab-kr/locale-match</a>
         <a href="https://devslab-kr.github.io/" data-i18n="footHub">오픈소스 허브</a>
+        <a href="https://devslab.kr/brand/open-source/">DevsLab 오픈소스</a>
         <a href="https://devslab.kr">devslab.kr</a>
       </div>
     </footer>
