@@ -43,7 +43,7 @@ const [site, checksums, ciWorkflow, publishWorkflow, ...readmes] = await Promise
 ]);
 
 const expectedAssets = new Map(
-  checksums.trim().split('\n').map((line) => {
+  checksums.trim().split(/\r?\n/).map((line) => {
     const match = /^([a-f0-9]{64})  (.+)$/.exec(line);
     if (!match) throw new Error(`invalid O07 checksum entry: ${line}`);
     return [match[2], match[1]];
@@ -59,9 +59,11 @@ for (const [relative, expectedHash] of expectedAssets) {
 
 const glyph = await readFile(asset('glyph-color.svg'), 'utf8');
 expect(glyph, 'data-oss-project="O07"', 'O07 registry id');
-expect(glyph, 'M5 8H10L15 16', 'O07 resolution-path upper branch');
-expect(glyph, 'M5 24H10L15 16', 'O07 resolution-path lower branch');
-expect(glyph, 'M15 16H27', 'O07 resolved output path');
+expect(glyph, 'data-layer="q-frame"', 'O07 shared Q frame');
+expect(glyph, '<rect x="5" y="5" width="16" height="16" rx="2"', 'O07 rear Q frame');
+expect(glyph, '<rect x="11" y="11" width="16" height="16" rx="2"', 'O07 front Q frame');
+expect(glyph, 'M13 14L18 18', 'O07 resolution-path upper branch');
+expect(glyph, 'M13 22L18 18H25', 'O07 resolved output path');
 reject(glyph, /flag|globe/i, 'O07 glyph must not use flag or globe imagery');
 
 const lockup = await readFile(asset('lockup-endorsed.svg'), 'utf8');
