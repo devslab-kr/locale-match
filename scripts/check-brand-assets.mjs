@@ -34,9 +34,11 @@ const readmePaths = [
   'packages/locale-match-nuxt/README.ko.md',
 ];
 
-const [site, checksums, ...readmes] = await Promise.all([
+const [site, checksums, ciWorkflow, publishWorkflow, ...readmes] = await Promise.all([
   read('site/index.html'),
   readFile(asset('checksums.txt'), 'utf8'),
+  read('.github/workflows/ci.yml'),
+  read('.github/workflows/publish.yml'),
   ...readmePaths.map(read),
 ]);
 
@@ -102,5 +104,12 @@ expect(site, 'LocaleMatch.createLocaleResolver', 'locale playground runtime');
 expect(site, 'function run()', 'locale playground render guard');
 reject(site, /https:\/\/devslab\.kr\/favicon\.ico/, 'site must not retain the remote corporate favicon');
 reject(site, /<(?:img|svg)[^>]+(?:flag|globe)/i, 'site must not introduce flag or globe imagery');
+
+for (const [workflow, source] of [
+  ['CI', ciWorkflow],
+  ['publish', publishWorkflow],
+]) {
+  expect(source, '- run: pnpm verify', `${workflow} workflow must run the standard brand-aware verification gate`);
+}
 
 console.log(`check:brand: verified O07 resolution path, ${readmePaths.length} localized READMEs, metadata, and ${expectedAssets.size} checksummed assets`);
