@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>locale-match | DevsLab 오픈소스</title>
+    <meta
+      name="description"
+      content="Accept-Language · navigator.languages 매칭에 교체 가능한 스크립트 가드. 본토 간체 브라우저에 번체 텍스트를 주지 않습니다. 의존성 0, React · Vue · Nuxt 바인딩."
+    />
+    <link rel="canonical" href="https://devslab-kr.github.io/locale-match/" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="devslab open source" />
+    <meta property="og:url" content="https://devslab-kr.github.io/locale-match/" />
+    <meta property="og:title" content="locale-match | DevsLab 오픈소스" />
+    <meta
+      property="og:description"
+      content="맨 zh는 간체인지 번체인지 말하지 않습니다. 두 층 규칙과 스크립트 가드로 그 함정을 막습니다. 의존성 0."
+    />
+    <meta property="og:image" content="https://devslab-kr.github.io/locale-match/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="locale-match resolution path logo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="locale-match | DevsLab 오픈소스" />
+    <meta name="twitter:description" content="문자까지 맞게 협상하는 의존성 없는 로케일 매처" />
+    <meta name="twitter:image" content="https://devslab-kr.github.io/locale-match/og.png" />
+    <meta name="twitter:image:alt" content="locale-match resolution path logo" />
+    <meta name="google-site-verification" content="nIGsjwN9PU78ZpydYp5q4blPGCHBaZZRuvVI8wsJREg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    <!-- The page that documents this library also runs on it. -->
+    <script src="https://unpkg.com/@devslab/locale-match@0.1/dist/index.global.js"></script>
+    <style>
+      :root {
+        --bg: #fafafa; --panel: #ffffff; --panel-soft: #fafafa;
+        --ink: #18181b; --body: #52525b; --muted: #71717a; --faint: #a1a1aa;
+        --line: #e4e4e7; --line-strong: #d4d4d8;
+        --electric: #0891b2; --electric-strong: #0e7490; --electric-raw: #06b6d4;
+        --ok: #059669; --warn: #b45309;
+        --dot: rgb(0 0 0 / 0.08); --header-bg: rgb(255 255 255 / 0.85);
+        color-scheme: light;
+      }
+      html.dark {
+        --bg: #09090b; --panel: #18181b; --panel-soft: #09090b;
+        --ink: #f4f4f5; --body: #a1a1aa; --muted: #71717a; --faint: #52525b;
+        --line: #27272a; --line-strong: #3f3f46;
+        --electric: #22d3ee; --electric-strong: #67e8f9; --electric-raw: #06b6d4;
+        --ok: #34d399; --warn: #fbbf24;
+        --dot: rgb(255 255 255 / 0.08); --header-bg: rgb(9 9 11 / 0.85);
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0; background: var(--bg); color: var(--ink);
+        font-family: 'Geist', -apple-system, 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+        line-height: 1.7; -webkit-font-smoothing: antialiased;
+      }
+      ::selection { background: #06b6d4; color: #fff; }
+      html.dark ::selection { background: #22d3ee; color: #0a0a0a; }
+      code, pre, .mono { font-family: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; }
+      a { color: var(--electric); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+        outline: 2px solid var(--electric-raw); outline-offset: 2px; border-radius: 6px;
+      }
+      .wrap { max-width: 60rem; margin: 0 auto; padding: 0 1rem; }
+      @media (min-width: 640px) { .wrap { padding: 0 1.5rem; } }
+
+      header.top {
+        position: sticky; top: 0; z-index: 50;
+        border-bottom: 1px solid var(--line); background: var(--header-bg);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      }
+      .top-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.875rem 1rem; }
+      @media (min-width: 640px) { .top-inner { padding: 0.875rem 1.5rem; } }
+      .brand { display: flex; align-items: center; gap: 0.5rem; color: var(--ink); }
+      .brand:hover { text-decoration: none; }
+      .brand-mark { width: 1.5rem; height: 1.5rem; flex: none; }
+      html.dark .brand-mark { filter: brightness(0) invert(1); }
+      .brand b { font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.02em; }
+      .brand span { font-size: 0.8125rem; color: var(--muted); }
+      .top-nav { display: flex; align-items: center; gap: 0.625rem; }
+      .top-nav a { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 0.8125rem; color: var(--body); }
+      .top-nav a:hover { color: var(--electric); text-decoration: none; }
+      @media (max-width: 560px) { .top-nav a.hide-sm { display: none; } }
+      .icon-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 2rem; height: 2rem; border-radius: 0.375rem;
+        border: 1px solid var(--line-strong); background: var(--panel);
+        color: var(--body); cursor: pointer;
+      }
+      .icon-btn:hover { background: var(--panel-soft); }
+      .icon-btn svg { width: 1.05rem; height: 1.05rem; }
+      html:not(.dark) #icon-sun { display: none; }
+      html.dark #icon-moon { display: none; }
+      #lang-btn { width: auto; padding: 0 0.5rem; font: 500 0.75rem 'Geist Mono', monospace; }
+
+      .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+      .hero-atmosphere { isolation: isolate; }
+      .hero-atmosphere__glow {
+        pointer-events: none; position: absolute; z-index: -1; inset: -8rem -10% -10rem 40%;
+        background: radial-gradient(ellipse at center, rgb(8 145 178 / 0.12), transparent 68%);
+      }
+      html.dark .hero-atmosphere__glow { opacity: 0.10; }
+      @media (forced-colors: active), print {
+        .hero-atmosphere__glow { display: none; }
+      }
+      .hero-inner { position: relative; padding: 4rem 0 3.5rem; }
+      @media (min-width: 768px) { .hero-inner { padding: 5.5rem 0 4.5rem; } }
+      .eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.8125rem; color: var(--electric); margin: 0 0 1.25rem; }
+      h1 { margin: 0 0 1.25rem; font-weight: 600; letter-spacing: -0.045em; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.1; }
+      h1 .accent { color: var(--electric); }
+      .lede { max-width: 40em; margin: 0 0 1.75rem; font-size: 1.0625rem; color: var(--body); }
+      .cta-row { display: flex; flex-wrap: wrap; gap: 0.625rem; align-items: center; }
+      .btn {
+        display: inline-flex; align-items: center; height: 2.5rem; padding: 0 1rem;
+        border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500;
+        background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
+      }
+      .btn:hover { text-decoration: none; opacity: 0.9; }
+      .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+      .btn-ghost:hover { border-color: var(--electric-raw); color: var(--electric-strong); }
+
+      section { padding: 3.5rem 0; border-bottom: 1px solid var(--line); }
+      section:last-of-type { border-bottom: 0; }
+      h2 { margin: 0 0 0.75rem; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; }
+      h3 { margin: 2rem 0 0.5rem; font-size: 1.0625rem; font-weight: 600; }
+      p { margin: 0 0 1rem; color: var(--body); }
+      .sec-eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.5rem; }
+      pre {
+        margin: 0 0 1rem; padding: 1rem; overflow-x: auto;
+        background: var(--panel); border: 1px solid var(--line); border-radius: 0.5rem;
+        font-size: 0.8125rem; line-height: 1.6; color: var(--ink);
+      }
+      :not(pre) > code {
+        background: var(--panel-soft); border: 1px solid var(--line);
+        border-radius: 0.25rem; padding: 0.05rem 0.3rem; font-size: 0.875em;
+      }
+      table { width: 100%; border-collapse: collapse; margin: 0 0 1rem; font-size: 0.875rem; display: block; overflow-x: auto; }
+      th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { color: var(--muted); font-weight: 500; font-size: 0.8125rem; white-space: nowrap; }
+
+      /* ---------- playground ---------- */
+      .play { background: var(--panel); border: 1px solid var(--line); border-radius: 0.75rem; padding: 1.25rem; }
+      .play label { display: block; font-size: 0.8125rem; color: var(--muted); margin: 0 0 0.375rem; }
+      .play input[type="text"] {
+        width: 100%; height: 2.5rem; padding: 0 0.75rem;
+        font: 0.875rem 'Geist Mono', monospace; color: var(--ink);
+        background: var(--bg); border: 1px solid var(--line-strong); border-radius: 0.5rem;
+      }
+      .presets { display: flex; flex-wrap: wrap; gap: 0.375rem; margin: 0.625rem 0 1.25rem; }
+      .preset {
+        font: 0.75rem 'Geist Mono', monospace; color: var(--body);
+        background: var(--panel-soft); border: 1px solid var(--line-strong);
+        border-radius: 0.375rem; padding: 0.25rem 0.5rem; cursor: pointer;
+      }
+      .preset:hover { border-color: var(--electric-raw); color: var(--electric-strong); }
+      .supported { display: flex; flex-wrap: wrap; gap: 0.375rem; margin: 0.375rem 0 1.25rem; }
+      .supported label {
+        display: inline-flex; align-items: center; gap: 0.3rem; margin: 0;
+        font: 0.75rem 'Geist Mono', monospace; color: var(--body);
+        background: var(--panel-soft); border: 1px solid var(--line-strong);
+        border-radius: 0.375rem; padding: 0.2rem 0.45rem; cursor: pointer;
+      }
+      .supported input { accent-color: var(--electric-raw); margin: 0; }
+      .verdict { border-top: 1px solid var(--line); padding-top: 1rem; }
+      .result-line { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; margin: 0 0 0.875rem; }
+      .result-line b { font: 600 1.375rem 'Geist Mono', monospace; color: var(--electric); }
+      .steps { list-style: none; margin: 0; padding: 0; font: 0.8125rem 'Geist Mono', monospace; }
+      .steps li { display: flex; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--line); }
+      .steps li:last-child { border-bottom: 0; }
+      .steps .tag { min-width: 9rem; color: var(--ink); }
+      .steps .why { color: var(--muted); }
+      .steps .pass { color: var(--ok); }
+      .steps .block { color: var(--warn); }
+
+      footer { padding: 2rem 0 3rem; }
+      .foot { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: center; font: 0.75rem 'Geist Mono', monospace; color: var(--muted); }
+      .foot a { color: var(--body); }
+      .foot a:hover { color: var(--electric); text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap top-inner">
+        <a class="brand" href="https://devslab.kr/brand/open-source/" aria-label="locale-match, Open source by DevsLab">
+          <img class="brand-mark" src="favicon.svg" alt="" aria-hidden="true" />
+          <b>locale-match</b><span class="mono">/ Open source by DevsLab</span>
+        </a>
+        <nav class="top-nav">
+          <a class="hide-sm" href="https://github.com/devslab-kr/locale-match" data-i18n="navGithub">GitHub</a>
+          <a class="hide-sm" href="https://www.npmjs.com/package/@devslab/locale-match">npm</a>
+          <button class="icon-btn" id="lang-btn" type="button" aria-label="Language">EN</button>
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
+            <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+            <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero hero-atmosphere" data-atmosphere="project" style="padding:0">
+        <div class="hero-atmosphere__glow" aria-hidden="true"></div>
+        <div class="wrap hero-inner">
+          <p class="eyebrow mono" dir="ltr">// @devslab/locale-match</p>
+          <h1><span data-i18n="h1a">간체 중국어 독자에게</span><br /><span class="accent" data-i18n="h1b">번체를 주지 않습니다</span></h1>
+          <p class="lede" data-i18n="lede">
+            <code>Accept-Language</code>와 <code>navigator.languages</code> 매칭에
+            교체 가능한 스크립트 가드. 의존성 0, Node · Bun · Deno · Cloudflare
+            Workers · 브라우저 어디서나. React · Vue · Nuxt 바인딩 포함.
+          </p>
+          <div class="cta-row">
+            <a class="btn" href="#playground" data-i18n="ctaTry">직접 해보기</a>
+            <a class="btn btn-ghost" href="https://github.com/devslab-kr/locale-match" data-i18n="ctaDocs">문서</a>
+            <span class="mono" style="font-size:.8125rem;color:var(--faint)">npm i @devslab/locale-match</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="probEyebrow">the problem</p>
+          <h2 data-i18n="probTitle">맨 <code>zh</code>는 가장 중요한 것에 침묵합니다</h2>
+          <p data-i18n="probP1">
+            대부분의 언어는 태그만으로 결정됩니다. <code>ko</code>는 한국어,
+            <code>de</code>는 독일어 — 더 알 것이 없습니다. 중국어는 예외이고,
+            그것도 아주 큰 예외입니다. <code>zh</code>는 <b>간체인지 번체인지</b>
+            말하지 않는데, 양쪽 다 수억 명의 독자가 있습니다.
+          </p>
+          <p data-i18n="probP2">거의 모두가 쓰는 코드는 이렇게 틀립니다:</p>
+          <pre dir="ltr"><code>const base = tag.split('-')[0];       <span style="color:var(--muted)">// 'zh-CN' → 'zh'</span>
+if (base === 'zh') return 'zh-TW';    <span style="color:var(--warn)">// ...간체 독자가 번체를 받는다</span></code></pre>
+          <p data-i18n="probP3">
+            그리고 그 뒤에 두 번째 함정이 있습니다. <code>zh-CN</code>을 거부해도
+            본토 브라우저는 이렇게 보냅니다:
+          </p>
+          <pre dir="ltr"><code>Accept-Language: zh-CN,zh;q=0.9</code></pre>
+          <p data-i18n="probP4">
+            방금 거부한 태그 <b>바로 뒤의 맨 <code>zh</code>가 그것을 구제</b>해서,
+            페이지는 여전히 번체로 돌아옵니다. 프로덕션에서 실제로 측정한
+            현상이고, 이 라이브러리는 그 두 사고에서 나왔습니다.
+          </p>
+        </div>
+      </section>
+
+      <section id="playground">
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="playEyebrow">playground</p>
+          <h2 data-i18n="playTitle">헤더를 넣어 보세요</h2>
+          <p data-i18n="playIntro">
+            이 페이지에 실제로 로드된 라이브러리가 아래에서 그대로 돕니다.
+            결과뿐 아니라 <b>왜 그렇게 됐는지</b>를 태그별로 보여줍니다.
+          </p>
+          <div class="play">
+            <label for="hdr" data-i18n="playHeaderLabel">Accept-Language 헤더</label>
+            <input id="hdr" type="text" dir="ltr" value="zh-CN,zh;q=0.9,en;q=0.8" spellcheck="false" />
+            <div class="presets" id="presets"></div>
+            <label data-i18n="playSupportedLabel">당신이 서비스하는 로케일</label>
+            <div class="supported" id="supported"></div>
+            <div class="verdict">
+              <div class="result-line">
+                <span data-i18n="playResult">결과</span>
+                <b id="result">—</b>
+                <span class="mono" id="resultWhy" style="font-size:.8125rem;color:var(--muted)"></span>
+              </div>
+              <ul class="steps" id="steps"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="ruleEyebrow">the rule</p>
+          <h2 data-i18n="ruleTitle">두 층 규칙</h2>
+          <p data-i18n="ruleIntro">
+            가드는 하나의 기본 언어에 대해 태그를 세 값으로 분류하고, 그 태그가
+            <b>어디서 왔는지</b>에 따라 다르게 적용합니다.
+          </p>
+          <table>
+            <thead><tr><th data-i18n="ruleTh1">태그의 출처</th><th data-i18n="ruleTh2">맨 <code>zh</code>의 의미</th></tr></thead>
+            <tbody>
+              <tr><td data-i18n="ruleTd1"><b>선언된 단일 값</b><br /><span class="mono" style="font-size:.8125rem;color:var(--muted)">?lang= · 쿠키 · 저장된 설정</span></td>
+                  <td data-i18n="ruleTd2"><b class="mono" style="color:var(--ok)">수용</b> — 중국어를 달라고 했고 우리에겐 중국어가 있다</td></tr>
+              <tr><td data-i18n="ruleTd3"><b>순위 목록의 한 항목</b><br /><span class="mono" style="font-size:.8125rem;color:var(--muted)">Accept-Language · navigator.languages</span></td>
+                  <td data-i18n="ruleTd4"><b class="mono" style="color:var(--warn)">거부</b> — 순위 목록에서는 모호한 항목이 정확한 항목을 구제한다</td></tr>
+            </tbody>
+          </table>
+          <p data-i18n="ruleGuard">
+            중국어 가드는 <b>당신이 쓴 <code>supported</code> 목록에서 자동으로
+            유도</b>됩니다. 번체만 있으면 번체 가드가, 간체만 있으면 간체 가드가
+            설치되고, 양쪽 다 서비스하거나 중국어가 없으면 보호할 대상이 없으므로
+            가드도 없습니다. 방문자에 대한 추측이 아니라 <b>당신이 직접 쓴 목록을
+            읽는 것</b>입니다.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="useEyebrow">usage</p>
+          <h2 data-i18n="useTitle">쓰는 법</h2>
+          <h3 class="mono" dir="ltr">@devslab/locale-match</h3>
+          <pre dir="ltr"><code>import { createLocaleResolver } from '@devslab/locale-match';
+
+const locales = createLocaleResolver({
+  supported: ['ko', 'en', 'ja', 'zh-HK', 'zh-TW', 'fr'],
+  fallback: 'ko',
+});
+
+<span style="color:var(--muted)">// 서버 (Workers · Node · Request가 있는 어디든)</span>
+const { locale } = locales.resolve({
+  query: url.searchParams.get('lang'),
+  cookieHeader: request.headers.get('cookie'),
+  acceptLanguage: request.headers.get('accept-language'),
+});
+
+<span style="color:var(--muted)">// 브라우저: ?lang= → localStorage → navigator.languages</span>
+const { locale } = locales.resolveInBrowser();</code></pre>
+
+          <h3 class="mono" dir="ltr">@devslab/locale-match-react</h3>
+          <pre dir="ltr"><code>&lt;LocaleProvider supported={LOCALES} fallback="ko" initial={serverLocale}&gt;
+  &lt;App /&gt;
+&lt;/LocaleProvider&gt;
+
+const { locale, setLocale, supported, isFallback } = useLocale();</code></pre>
+          <p data-i18n="useReact">
+            감지는 렌더 중이 아니라 <b>마운트 직후 이펙트에서</b> 실행됩니다.
+            서버가 그린 HTML과 첫 클라이언트 렌더가 어긋나면 하이드레이션
+            불일치이기 때문입니다. 서버에서 확정한 값을 <code>initial</code>로
+            넘기면 그 한 프레임도 없습니다.
+          </p>
+
+          <h3 class="mono" dir="ltr">@devslab/locale-match-vue · -nuxt</h3>
+          <pre dir="ltr"><code><span style="color:var(--muted)">// Vue 3</span>
+app.use(createLocalePlugin({ supported: LOCALES, fallback: 'ko' }));
+
+<span style="color:var(--muted)">// Nuxt — SSR에서 확정하므로 언어 깜빡임이 없습니다</span>
+export default defineNuxtConfig({
+  modules: ['@devslab/locale-match-nuxt'],
+  localeMatch: { supported: LOCALES, fallback: 'ko' },
+});</code></pre>
+
+          <h3 data-i18n="useCdnTitle">빌드 스텝 없이</h3>
+          <pre dir="ltr"><code>&lt;script src="https://unpkg.com/@devslab/locale-match/dist/index.global.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const locales = LocaleMatch.createLocaleResolver({ supported: [...], fallback: 'ko' });
+  document.documentElement.lang = locales.resolveInBrowser().locale;
+&lt;/script&gt;</code></pre>
+          <p data-i18n="useCdnNote">이 페이지가 바로 그렇게 동작합니다.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="extEyebrow">extending</p>
+          <h2 data-i18n="extTitle">다른 언어 가드 추가하기</h2>
+          <p data-i18n="extIntro">
+            중국어는 거의 모두가 겪는 케이스라 내장했습니다. 하지만 메커니즘은
+            중국어 전용이 아닙니다 — 문자로 독자가 갈리는 언어라면 무엇이든
+            같은 방식으로 쓸 수 있습니다.
+          </p>
+          <pre dir="ltr"><code>import { defineScriptGuard } from '@devslab/locale-match';
+
+const serbianLatin = defineScriptGuard({
+  language: 'sr',                        <span style="color:var(--muted)">// 기본 서브태그, 소문자</span>
+  supported: /^sr-(latn|latin)\b/,       <span style="color:var(--muted)">// 소문자화된 태그에 테스트됨</span>
+  unsupported: /^sr-(cyrl|cyrillic)\b/,
+});</code></pre>
+          <p data-i18n="extTips">
+            <b>지역까지 덮으세요</b> — 사람들은 <code>sr-Cyrl</code>이 아니라
+            <code>sr-RS</code>라고 씁니다. <b>맨 태그는 분류하지 마세요</b> —
+            두 층 규칙이 처리합니다. <b>패턴을 고정하세요</b>. 자세한 이유와
+            체크리스트는 README에 있고, 충분히 조사된 가드를 추가하는 PR을
+            환영합니다.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <p class="sec-eyebrow" data-i18n="whyEyebrow">why not something else</p>
+          <h2 data-i18n="whyTitle">기존 라이브러리를 쓰면 안 되나요?</h2>
+          <p data-i18n="whyIntro">써도 됩니다. 이게 필요 없을 수도 있습니다.</p>
+          <table>
+            <tbody>
+              <tr><td class="mono" dir="ltr">@formatjs/intl-localematcher</td>
+                  <td data-i18n="why1">표준 알고리즘을 제대로 구현합니다. <code>lookup</code>은 옆걸음을 하지 않아 중국어 버그를 피하지만, 동시에 <code>pt-PT</code>가 <code>pt-BR</code> 대신 영어를 받습니다. <code>best fit</code>은 문자를 가로질러 매칭할 수 있습니다.</td></tr>
+              <tr><td class="mono" dir="ltr">i18next-browser-languagedetector</td>
+                  <td data-i18n="why2">감지 <b>순서</b>를 제공합니다. 다만 <code>load: 'languageOnly'</code>는 지역을 잘라내서 이 라이브러리가 막으려는 바로 그 버그를 다시 만듭니다.</td></tr>
+              <tr><td class="mono" dir="ltr">next-intl · vue-i18n</td>
+                  <td data-i18n="why3">완전한 i18n 프레임워크입니다. 이미 쓰고 있다면 그대로 두고, 협상 단계에만 이걸 쓰세요.</td></tr>
+            </tbody>
+          </table>
+          <p data-i18n="whyClose">
+            이 라이브러리가 더하는 것은 어느 쪽도 결정해 주지 않는 부분입니다:
+            <b>당신이 어떤 문자를 서비스하는가, 그리고 반대쪽을 요청한 독자를
+            어떻게 할 것인가.</b>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap foot">
+        <span>Apache-2.0 © devslab</span>
+        <a href="https://github.com/devslab-kr/locale-match">github.com/devslab-kr/locale-match</a>
+        <a href="https://devslab-kr.github.io/" data-i18n="footHub">오픈소스 허브</a>
+        <a href="https://devslab.kr/brand/open-source/">DevsLab 오픈소스</a>
+        <a href="https://devslab.kr">devslab.kr</a>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var LOCALES = ['ko', 'en', 'ja', 'zh-HK', 'zh-TW', 'hi', 'fr', 'de', 'pt-BR', 'ar'];
+        var DEFAULT_SUPPORTED = ['ko', 'en', 'ja', 'zh-HK', 'zh-TW', 'pt-BR'];
+
+        var PRESETS = [
+          { label: 'mainland', header: 'zh-CN,zh;q=0.9,en;q=0.8' },
+          { label: 'Hong Kong', header: 'zh-HK,zh;q=0.9' },
+          { label: 'Taiwan', header: 'zh-TW,zh;q=0.9,en;q=0.8' },
+          { label: 'Singapore', header: 'zh-SG,zh;q=0.9,en;q=0.8' },
+          { label: 'Japan', header: 'ja-JP,ja;q=0.9,en;q=0.8' },
+          { label: 'Portugal', header: 'pt-PT,pt;q=0.9,en;q=0.8' },
+          { label: 'Iceland', header: 'is-IS,is;q=0.9' }
+        ];
+
+        var I18N = {
+          ko: {
+            title: 'locale-match — 간체 독자에게 번체를 주지 않는 로케일 협상',
+            navGithub: 'GitHub',
+            h1a: '간체 중국어 독자에게', h1b: '번체를 주지 않습니다',
+            ctaTry: '직접 해보기', ctaDocs: '문서',
+            playEyebrow: 'playground', playTitle: '헤더를 넣어 보세요',
+            playHeaderLabel: 'Accept-Language 헤더',
+            playSupportedLabel: '당신이 서비스하는 로케일',
+            playResult: '결과',
+            stepPass: '통과', stepBlockScript: '문자 불일치로 거부', stepNoMatch: '지원하지 않음',
+            whyQuery: '헤더에서 매칭', whyFallback: '매칭 없음 → 기본값',
+            footHub: '오픈소스 허브'
+          },
+          en: {
+            title: 'locale-match — locale negotiation that gets the script right',
+            navGithub: 'GitHub',
+            h1a: 'Never hand a Simplified reader', h1b: 'your Traditional text',
+            lede: '<code>Accept-Language</code> and <code>navigator.languages</code> matching with pluggable script guards. Zero dependencies; runs in Node, Bun, Deno, Cloudflare Workers and the browser. React, Vue and Nuxt bindings included.',
+            ctaTry: 'Try it', ctaDocs: 'Docs',
+
+            probEyebrow: 'the problem',
+            probTitle: 'A bare <code>zh</code> is silent about the one thing that matters',
+            probP1: 'Most languages are decided by their tag alone. <code>ko</code> means Korean, <code>de</code> means German — there is nothing else to know. Chinese is the exception, and it is a large one. <code>zh</code> does not say whether it means <b>Simplified or Traditional</b>, and both scripts have hundreds of millions of readers.',
+            probP2: 'The code almost everyone writes gets it wrong like this:',
+            probP3: 'And there is a second trap behind it. Even after you refuse <code>zh-CN</code>, a mainland browser sends this:',
+            probP4: 'The bare <code>zh</code> sitting <b>right behind the tag you just refused rescues it</b>, and the page comes back Traditional anyway. We measured that in production; this library came out of those two incidents.',
+
+            playEyebrow: 'playground', playTitle: 'Paste a header',
+            playIntro: 'The library actually loaded on this page is what runs below. It shows not just the answer but <b>why</b>, tag by tag.',
+            playHeaderLabel: 'Accept-Language header',
+            playSupportedLabel: 'Locales you publish',
+            playResult: 'Result',
+
+            ruleEyebrow: 'the rule', ruleTitle: 'The two-tier rule',
+            ruleIntro: 'A guard sorts a tag into three verdicts for one base language, and applies them differently depending on <b>where the tag came from</b>.',
+            ruleTh1: 'Where the tag came from', ruleTh2: 'What a bare <code>zh</code> means',
+            ruleTd1: '<b>One declared value</b><br /><span class="mono" style="font-size:.8125rem;color:var(--muted)">?lang= · cookie · a saved setting</span>',
+            ruleTd2: '<b class="mono" style="color:var(--ok)">accept</b> — they asked for Chinese and you have Chinese',
+            ruleTd3: '<b>An entry in a ranked list</b><br /><span class="mono" style="font-size:.8125rem;color:var(--muted)">Accept-Language · navigator.languages</span>',
+            ruleTd4: '<b class="mono" style="color:var(--warn)">refuse</b> — in a ranked list a vague entry rescues a precise one',
+            ruleGuard: 'The Chinese guard is <b>derived automatically from the <code>supported</code> list you wrote</b>. Traditional-only installs a Traditional guard, Simplified-only installs a Simplified one, and publishing both scripts (or no Chinese) installs none, because there is nothing to protect. This is not a guess about your visitors — it <b>reads a list you declared</b>.',
+
+            useEyebrow: 'usage', useTitle: 'Using it',
+            useReact: 'Detection runs in an effect <b>after mount</b>, never during render, because server-rendered HTML and a disagreeing first client render is a hydration mismatch. Pass a server-resolved value as <code>initial</code> and there is no frame to lose.',
+            useCdnTitle: 'No build step',
+            useCdnNote: 'That is exactly how this page works.',
+
+            extEyebrow: 'extending', extTitle: 'Adding a guard for another language',
+            extIntro: 'Chinese ships built in because it is the case that bites almost everyone. But the mechanism is not Chinese-specific — any language whose readers are split by script works the same way.',
+            extTips: '<b>Cover the regions</b> — people write <code>sr-RS</code>, not <code>sr-Cyrl</code>. <b>Do not classify the bare tag</b> — the two-tier rule handles it. <b>Anchor your patterns.</b> The reasoning and a checklist are in the README, and pull requests adding well-researched guards are welcome.',
+
+            whyEyebrow: 'why not something else', whyTitle: 'Why not an existing library?',
+            whyIntro: 'You may not need this one.',
+            why1: 'Implements the spec\u2019s algorithms properly. <code>lookup</code> does not step sideways, so it avoids the Chinese bug — and also sends <code>pt-PT</code> to English instead of <code>pt-BR</code>. <code>best fit</code> can match across scripts.',
+            why2: 'Gives you the detection <b>order</b>. But <code>load: \u2018languageOnly\u2019</code> strips the region, which reintroduces the exact bug this library exists to prevent.',
+            why3: 'Full i18n frameworks. If you already run one, keep it and use this only for the negotiation step.',
+            whyClose: 'What this adds is the part none of them decide: <b>which script you publish, and what to do with a reader who asked for the other one.</b>',
+
+            stepPass: 'matched', stepBlockScript: 'refused — wrong script', stepNoMatch: 'not supported',
+            whyQuery: 'matched from the header', whyFallback: 'nothing matched → fallback',
+            footHub: 'open-source hub'
+          }
+        };
+
+        // The page picks its own language with the library it documents.
+        var pageResolver = window.LocaleMatch
+          ? window.LocaleMatch.createLocaleResolver({
+              supported: ['ko', 'en'],
+              fallback: 'en',
+              storageKey: 'lm-site-lang',
+            })
+          : null;
+        var lang = pageResolver ? pageResolver.resolveInBrowser().locale : 'ko';
+
+        var KO_DOM = {};
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          KO_DOM[el.getAttribute('data-i18n')] = el.innerHTML;
+        });
+
+        function applyLang(next, persist) {
+          lang = next;
+          document.documentElement.lang = next;
+          document.getElementById('lang-btn').textContent = next === 'ko' ? 'EN' : 'KO';
+          var dict = I18N[next] || {};
+          if (dict.title) document.title = dict.title;
+          document.querySelectorAll('[data-i18n]').forEach(function (el) {
+            var key = el.getAttribute('data-i18n');
+            // Korean is the source copy, kept verbatim from the markup.
+            // Every other locale must have a value for every key —
+            // a missing one would leave that block in Korean, which is
+            // worse than not offering the language at all.
+            el.innerHTML = next === 'ko' ? KO_DOM[key] : (dict[key] || KO_DOM[key]);
+          });
+          if (persist && pageResolver) pageResolver.persist(next);
+          run();
+        }
+
+        // ---- playground ------------------------------------------------
+        var hdr = document.getElementById('hdr');
+        var stepsEl = document.getElementById('steps');
+        var resultEl = document.getElementById('result');
+        var whyEl = document.getElementById('resultWhy');
+
+        PRESETS.forEach(function (p) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'preset';
+          b.textContent = p.label;
+          b.addEventListener('click', function () { hdr.value = p.header; run(); });
+          document.getElementById('presets').appendChild(b);
+        });
+
+        LOCALES.forEach(function (code) {
+          var id = 'sup-' + code;
+          var label = document.createElement('label');
+          var box = document.createElement('input');
+          box.type = 'checkbox';
+          box.id = id;
+          box.value = code;
+          box.checked = DEFAULT_SUPPORTED.indexOf(code) > -1;
+          box.addEventListener('change', run);
+          label.appendChild(box);
+          label.appendChild(document.createTextNode(code));
+          document.getElementById('supported').appendChild(label);
+        });
+
+        function supportedNow() {
+          return Array.prototype.slice
+            .call(document.querySelectorAll('#supported input:checked'))
+            .map(function (b) { return b.value; });
+        }
+
+        function run() {
+          var t = I18N[lang] || I18N.ko;
+          if (!window.LocaleMatch) {
+            resultEl.textContent = '—';
+            whyEl.textContent = 'library not loaded';
+            return;
+          }
+          var LM = window.LocaleMatch;
+          var supported = supportedNow();
+          if (!supported.length) {
+            resultEl.textContent = '—';
+            whyEl.textContent = '';
+            stepsEl.innerHTML = '';
+            return;
+          }
+          var guards = LM.guardsFor(supported);
+          var tags = LM.parseAcceptLanguage(hdr.value);
+
+          stepsEl.innerHTML = '';
+          var winner = null;
+          tags.forEach(function (entry) {
+            var li = document.createElement('li');
+            var tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = entry.tag + (entry.q < 1 ? ';q=' + entry.q : '');
+            var why = document.createElement('span');
+            var allowed = LM.tagAllowed(guards, entry.tag, 'ranked');
+            var hit = allowed ? LM.matchLocale(entry.tag, supported, { guards: guards, source: 'ranked' }) : null;
+            if (!allowed) {
+              why.className = 'why block';
+              why.textContent = '✕ ' + t.stepBlockScript;
+            } else if (hit) {
+              why.className = 'why pass';
+              why.textContent = '✓ ' + t.stepPass + ' → ' + hit;
+              if (!winner) winner = hit;
+            } else {
+              why.className = 'why';
+              why.textContent = '· ' + t.stepNoMatch;
+            }
+            li.appendChild(tag);
+            li.appendChild(why);
+            stepsEl.appendChild(li);
+          });
+
+          var fallback = supported.indexOf('ko') > -1 ? 'ko' : supported[0];
+          resultEl.textContent = winner || fallback;
+          whyEl.textContent = winner ? t.whyQuery : t.whyFallback;
+        }
+
+        hdr.addEventListener('input', run);
+        document.getElementById('lang-btn').addEventListener('click', function () {
+          applyLang(lang === 'ko' ? 'en' : 'ko', true);
+        });
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+          var dark = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', dark ? 'dark' : 'light');
+        });
+
+        applyLang(lang, false);
+      })();
+    </script>
+  </body>
+</html>
