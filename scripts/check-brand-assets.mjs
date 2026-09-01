@@ -62,8 +62,8 @@ expect(glyph, 'data-oss-project="O07"', 'O07 registry id');
 expect(glyph, 'data-layer="q-frame"', 'O07 shared Q frame');
 expect(glyph, '<rect x="5" y="5" width="16" height="16" rx="2"', 'O07 rear Q frame');
 expect(glyph, '<rect x="11" y="11" width="16" height="16" rx="2"', 'O07 front Q frame');
-expect(glyph, 'M13 14L18 18', 'O07 resolution-path upper branch');
-expect(glyph, 'M13 22L18 18H25', 'O07 resolved output path');
+expect(glyph, 'M13 14L18 18H25', 'O07 resolved output path');
+expect(glyph, 'M13 22L18 18', 'O07 resolution-path lower branch');
 reject(glyph, /flag|globe/i, 'O07 glyph must not use flag or globe imagery');
 
 const lockup = await readFile(asset('lockup-endorsed.svg'), 'utf8');
