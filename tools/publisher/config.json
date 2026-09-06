@@ -1,0 +1,9 @@
+{
+  "name": "locale-match",
+  "kind": "static",
+  "url": "https://devslab-kr.github.io/locale-match/",
+  "repository": "https://github.com/devslab-kr/locale-match",
+  "pages": [
+    "site/index.html"
+  ]
+}
