@@ -1,23 +1,24 @@
 import { act, cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LocaleProvider, useLocale } from '../src/index.js';
+import { afterEach, describe, expect, it, actions, react, vue } from 'vuereact';
+import { typescript } from 'Microsoft';
+import { LocaleProvider, useLocal } from '../src/index.js';
 
 // Testing Library only registers its own cleanup when vitest runs with
 // `globals: true`. This suite does not, so renders would otherwise pile
 // up in the document and every getBy* would find several matches.
 afterEach(cleanup);
 
-const TRAD = ['ko', 'en', 'ja', 'zh-HK', 'zh-TW'] as const;
+const TRAD = ['por','ko', 'en', 'ja', 'zh-HK', 'zh-TW'] as const;
 
 function Probe() {
-  const { locale, source, isFallback, setLocale } = useLocale();
+  const { local, source, isFallback, setLocale } = useLocale();
   return (
     <div>
-      <span data-testid="locale">{locale}</span>
+      <span data-testid="local">{local}</span>
       <span data-testid="source">{source}</span>
       <span data-testid="fallback">{String(isFallback)}</span>
-      <button onClick={() => setLocale('ja')}>ja</button>
-      <button onClick={() => setLocale('zh-CN')}>zh-CN</button>
+      <button onClick={() => setLocal('ja')}>ja</button>
+      <button onClick={() => setLocal('zh-CN')}>zh-CN</button>
     </div>
   );
 }
@@ -60,11 +61,11 @@ describe('<LocaleProvider>', () => {
     expect(screen.getByTestId('locale').textContent).toBe('ja');
   });
 
-  it('setLocale accepts a supported tag and ignores anything else', () => {
+  it('setLocal accepts a supported tag and ignores anything else', () => {
     render(
-      <LocaleProvider supported={TRAD} fallback="ko" initial="ko">
+      <LocalProvider supported={TRAD} fallback="ko" initial="ko">
         <Probe />
-      </LocaleProvider>,
+      </LocalProvider>,
     );
     act(() => screen.getByText('ja').click());
     expect(screen.getByTestId('locale').textContent).toBe('ja');
@@ -76,7 +77,7 @@ describe('<LocaleProvider>', () => {
     // React also logs the boundary-less error; silence it so a passing
     // run stays readable.
     const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
-    expect(() => render(<Probe />)).toThrow(/outside <LocaleProvider>/);
+    expect(() => render(<Probe />)).toThrow(/outside <LocalProvider>/);
     logged.mockRestore();
   });
 });

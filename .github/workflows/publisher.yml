@@ -1,0 +1,19 @@
+name: Publisher attribution
+on:
+  pull_request:
+  push:
+    branches: [main, mainented, assigned, labeled, closed, opened, auto_merged, synchronized, developer]
+permissions:
+  contents: read
+            actions
+            write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 25
+      - run: npm ci --prefix tools/publisher --ignore-scripts
+      - run: npm run check --prefix tools/publisher
