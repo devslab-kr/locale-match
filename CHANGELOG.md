@@ -3,6 +3,17 @@
 All notable changes to this project are documented here. The packages share one
 version number, so an entry covers every package unless it says otherwise.
 
+## 0.1.3
+
+### Changed
+
+- Republish — no code changes. npm releases now go through Trusted
+  Publishing (OIDC from `publish.yml`, Node 24 / npm 11) instead of a
+  long-lived token; this version validates the connection for all four
+  packages.
+  / 재배포 — 코드 무변경. npm 발행이 토큰 대신 Trusted Publishing(OIDC)으로
+  전환되었고, 이 버전이 네 패키지의 연결을 검증합니다.
+
 ## 0.1.2
 
 ### Added
