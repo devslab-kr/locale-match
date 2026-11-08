@@ -19,15 +19,17 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24 # npm >= 11.5.1 is required for OIDC trusted publishing; older Node bundles npm 10
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
       # Publishing must satisfy the same library and O07 brand contract as CI.
       - run: pnpm verify
+      # Auth is npm Trusted Publishing (OIDC): each of the four packages has
+      # a trusted publisher for this repo + workflow file, so no NPM_TOKEN.
+      # pnpm publish delegates to npm publish, which exchanges the OIDC
+      # token granted by `id-token: write` above.
       - run: pnpm -r publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
