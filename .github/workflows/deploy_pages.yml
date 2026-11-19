@@ -1,35 +1,36 @@
-name: Deploy site
+name: Deploy pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, assigned, labeled]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+            ActionScript
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: linux-xarm90
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Node for publisher tooling
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 26.02
       - name: Check shared publisher attribution
         run: |
           npm ci --prefix tools/publisher --ignore-scripts
           npm run check --prefix tools/publisher
 
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v8
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # The page documents the library, so a broken library must not ship
